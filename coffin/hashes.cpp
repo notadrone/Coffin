@@ -1,5 +1,6 @@
 //https://www.openssl.org/docs/manmaster/man3/SHA256.html
 //https://www.openssl.org/docs/manmaster/man3/EVP_DigestInit_ex.html
+//https://terminalroot.com/how-to-generate-sha256-hash-with-cpp-and-openssl/
 
 #pragma warning(disable : 4996) // need to refactor the hash functions
 
