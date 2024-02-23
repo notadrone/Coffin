@@ -184,6 +184,7 @@
   <ItemGroup>
     <ClCompile Include="coffin.cpp" />
     <ClCompile Include="hashes.cpp" />
+    <ClCompile Include="parser.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="hashes.h" />

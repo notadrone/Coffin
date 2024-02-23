@@ -7,10 +7,14 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+#include <string>
 #include <openssl/sha.h>
 #include <openssl/md5.h>
+#include <openssl/evp.h>
 
-std::string hash_sha256_string(const std::string str) {
+using std::string;
+
+string hash_sha256_string(const string str) {
     /*
     calculates the SHA256 of a string
     
@@ -34,7 +38,7 @@ std::string hash_sha256_string(const std::string str) {
     return ss.str();
 }
 
-std::string hash_md5_string(const std::string str) {
+string hash_md5_string(const string str) {
     /*
     calculates the MD5 hash of a string
 
@@ -136,14 +140,57 @@ int hash_md5_file(const char* path, char outputBuffer[65])
     return 0;
 }
 
-//SHA256_CTX sha256;
-//SHA256_Init(&sha256);
-//FILE* f = ...; // pretend it's valid and gets cleaned up
-//while (true)
-//{
-//    unsigned char buf[4096];
-//    // in case we get less bytes back than we request
-//    size_t actual_len = read_from_file(f, buf, sizeof(buf));
-//    SHA256_Update(&sha256, buf, actual_len);
-//}
-//SHA256_Final(hash, &sha256);
+int evp_sha256_file (const char* path, string& output) {
+
+    EVP_MD_CTX* mdctx;
+    int i;
+    unsigned int md_len;
+    unsigned char md_value[EVP_MAX_MD_SIZE];
+
+    mdctx = EVP_MD_CTX_new();
+    EVP_DigestInit_ex(mdctx, EVP_sha256(), NULL);
+    
+    const int buffer_size = 32768;
+    unsigned char* buffer = (unsigned char*)malloc(buffer_size);
+    if (!buffer) return ENOMEM;
+
+    FILE* file = fopen(path, "rb");
+    //!TODO - error handling find proper error number constants
+    if (!file) return -534; //??? What error number is this ???
+
+    int bytesRead = 0;
+    while ((bytesRead = fread(buffer, 1, buffer_size, file)))
+    {
+        EVP_DigestUpdate (mdctx, buffer, bytesRead);
+    }
+    EVP_DigestFinal(mdctx, md_value, &md_len);
+    
+    std::stringstream ss;
+    for (int i = 0; i < md_len; i++) {
+        ss << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(md_value[i]);
+    }
+    EVP_MD_CTX_free(mdctx);
+
+    output = ss.str();
+    return 0;
+};
+
+string evp_sha256_string (const string str) {
+    
+    EVP_MD_CTX *mdctx;
+    size_t i;
+    unsigned int md_len;
+    unsigned char md_value[EVP_MAX_MD_SIZE];
+
+    mdctx = EVP_MD_CTX_new();
+    EVP_DigestInit_ex (mdctx, EVP_sha256(), NULL);
+    EVP_DigestUpdate (mdctx, str.c_str(), str.size());
+    EVP_DigestFinal (mdctx, md_value, &md_len);
+
+    std::stringstream ss;
+    for (int i = 0; i < md_len; i++) {
+        ss << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(md_value[i]);
+    }
+    EVP_MD_CTX_free (mdctx);
+    return ss.str();
+}

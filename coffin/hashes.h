@@ -15,3 +15,8 @@ std::string hash_md5_string(const std::string str);
 int hash_md5_file(const char* path, char outputBuffer[65]);
 
 void md5_hex_string(unsigned char hash[MD5_DIGEST_LENGTH], char outputBuffer[33]);
+
+std::string evp_sha256_string(const std::string str);
+
+//std::string evp_sha256_file(const char* path, string& output);
+int evp_sha256_file(const char* path, std::string& output);
