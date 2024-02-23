@@ -29,5 +29,11 @@
     <ClInclude Include="hashes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="pefileheader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="parser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

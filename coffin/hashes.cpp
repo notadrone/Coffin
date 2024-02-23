@@ -140,7 +140,7 @@ int hash_md5_file(const char* path, char outputBuffer[65])
     return 0;
 }
 
-int evp_sha256_file (const char* path, string& output) {
+int evp_sha256_file (std::string path, string& output) {
 
     EVP_MD_CTX* mdctx;
     int i;
@@ -154,7 +154,7 @@ int evp_sha256_file (const char* path, string& output) {
     unsigned char* buffer = (unsigned char*)malloc(buffer_size);
     if (!buffer) return ENOMEM;
 
-    FILE* file = fopen(path, "rb");
+    FILE* file = fopen(path.c_str(), "rb");
     //!TODO - error handling find proper error number constants
     if (!file) return -534; //??? What error number is this ???
 
